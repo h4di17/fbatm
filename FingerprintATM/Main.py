@@ -7,7 +7,9 @@ app = Flask(__name__)
 app.secret_key = 'welcome'
 global uname
 
-global uname
+@app.route('/')
+def home():
+    return redirect('/index.html')
 
 @app.route('/Deposit', methods=['GET', 'POST'])
 def Deposit():
@@ -22,7 +24,6 @@ def Withdraw():
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template('index.html', msg='')
-
 
 @app.route('/Login', methods=['GET', 'POST'])
 def Login():
@@ -59,7 +60,7 @@ def LoginAction():
         password = request.form['t2']
         data = request.files['t3'].read() 
         index = 0
-        con = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+        con = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
         with con:
             cur = con.cursor()
             cur.execute("select * FROM users")
@@ -81,7 +82,7 @@ def LoginAction():
         
 def getAmount(user):
     amount = 0
-    con = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+    con = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
     with con:
         cur = con.cursor()
         cur.execute("select * FROM transaction")
@@ -104,7 +105,7 @@ def WithdrawAction():
             total = total - withdraw
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             student_sql_query = "update transaction set transaction_amount='"+amount+"',transaction_type='Withdrawl',transaction_date='"+str(timestamp)+"',total_balance='"+str(total)+"' where username='"+user+"'"
-            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
             db_cursor = db_connection.cursor()
             db_cursor.execute(student_sql_query)
             db_connection.commit()
@@ -127,7 +128,7 @@ def DepositAction():
             total = total + float(amount)
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             student_sql_query = "INSERT INTO transaction(username,transaction_amount,transaction_type,transaction_date,total_balance) VALUES('"+user+"','"+amount+"','Deposit','"+str(timestamp)+"','"+str(total)+"')"
-            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
             db_cursor = db_connection.cursor()
             db_cursor.execute(student_sql_query)
             db_connection.commit()
@@ -137,7 +138,7 @@ def DepositAction():
             total = total + float(amount)
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             student_sql_query = "update transaction set transaction_amount='"+amount+"',transaction_type='Deposit',transaction_date='"+str(timestamp)+"',total_balance='"+str(total)+"' where username='"+user+"'"
-            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
             db_cursor = db_connection.cursor()
             db_cursor.execute(student_sql_query)
             db_connection.commit()
@@ -156,7 +157,7 @@ def SignupAction():
         gender = request.form['t6']
         data = request.files['t7'].read()  
         status = "none"
-        con = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+        con = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
         with con:
             cur = con.cursor()
             cur.execute("select * FROM users")
@@ -166,7 +167,7 @@ def SignupAction():
                     status = user+" Username already exists"
                     break
         if status == 'none':
-            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = '', database = 'atm',charset='utf8')
+            db_connection = pymysql.connect(host='127.0.0.1',port = 3306,user = 'root', password = 'root', database = 'atm',charset='utf8')
             db_cursor = db_connection.cursor()
             student_sql_query = "INSERT INTO users(username,password,contact_no,emailid,address,gender) VALUES('"+user+"','"+password+"','"+phone+"','"+email+"','"+address+"','"+gender+"')"
             db_cursor.execute(student_sql_query)
@@ -183,19 +184,9 @@ def SignupAction():
 
 @app.route('/Logout')
 def Logout():
-    return render_template('index.html', msg='')
+    return render_template('index.html', msg='Logout Successfull')
 
 
 
 if __name__ == '__main__':
-    app.run()
-
-
-
-
-
-
-
-
-
-
+    app.run(debug=True)
